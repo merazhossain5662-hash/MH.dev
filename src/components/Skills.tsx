@@ -101,13 +101,12 @@ export default function Skills() {
     if (!sectionRef.current) return;
 
     const ctx = gsap.context(() => {
-      // Pin section and step through accordion collapse on scroll
       ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
-        end: `+=${stackData.length * 120}%`,
+        end: `+=${stackData.length * 100}%`,
         pin: true,
-        scrub: 0.6,
+        scrub: 0.5,
         onUpdate: (self) => {
           const index = Math.min(
             Math.floor(self.progress * stackData.length),
@@ -121,25 +120,24 @@ export default function Skills() {
     return () => ctx.revert();
   }, []);
 
-  // Animate accordion layout transitions with GSAP Flip / Stagger
+  // Animate skill icons in the active card when section changes
   useEffect(() => {
     const activeCat = stackData[activeIndex].id;
     const activeEl = cardRefs.current[activeCat];
 
     if (!activeEl) return;
 
-    // Animate inner skill tiles in active card
     const tiles = activeEl.querySelectorAll(".skill-tile");
     gsap.fromTo(
       tiles,
-      { opacity: 0, scale: 0.85, y: 12 },
+      { opacity: 0, scale: 0.85, y: 10 },
       {
         opacity: 1,
         scale: 1,
         y: 0,
-        duration: 0.4,
+        duration: 0.35,
         stagger: 0.04,
-        ease: "power2.out",
+        ease: "back.out(1.5)",
       },
     );
   }, [activeIndex]);
@@ -147,11 +145,11 @@ export default function Skills() {
   return (
     <div
       ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center pt-16 pb-20"
+      className="relative min-h-screen flex items-center justify-center py-12"
     >
       <section
         id="skills"
-        className="w-full px-4 md:px-12 max-w-4xl mx-auto flex flex-col justify-center"
+        className="w-full px-4 md:px-12 max-w-5xl mx-auto flex flex-col justify-center"
       >
         {/* Section Header */}
         <div className="text-center mb-8 space-y-2">
@@ -159,7 +157,7 @@ export default function Skills() {
             My Tech Stack
           </h2>
           <p className="text-neutral-400 text-xs md:text-sm">
-            Scroll down to expand categories.
+            Scroll to step through and reveal tech stacks.
           </p>
 
           {/* Progress Indicators */}
@@ -177,8 +175,8 @@ export default function Skills() {
           </div>
         </div>
 
-        {/* Collapsible Accordion Grid Container */}
-        <div className="flex flex-col gap-3">
+        {/* 2-Column Grid for Desktop, 1-Column for Mobile */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           {stackData.map((cat, idx) => {
             const isActive = idx === activeIndex;
 
@@ -190,13 +188,13 @@ export default function Skills() {
                 }}
                 className={`relative rounded-2xl border transition-all duration-500 overflow-hidden backdrop-blur-md ${
                   isActive
-                    ? "border-blue-500/60 bg-neutral-900/90 shadow-[0_0_25px_rgba(59,130,246,0.15)]"
-                    : "border-white/10 bg-neutral-950/40 hover:border-white/20"
+                    ? "border-blue-500/60 bg-neutral-900/90 shadow-[0_0_25px_rgba(59,130,246,0.15)] ring-1 ring-blue-500/30"
+                    : "border-white/10 bg-neutral-950/40 opacity-60"
                 }`}
               >
                 {/* Header (Always Visible) */}
                 <div
-                  className={`flex items-center justify-between p-4 md:p-5 transition-colors duration-300 ${
+                  className={`flex items-center justify-between p-4 transition-colors duration-300 ${
                     isActive ? "border-b border-white/10 bg-white/5" : ""
                   }`}
                 >
@@ -217,7 +215,7 @@ export default function Skills() {
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <span className="text-[10px] font-mono text-neutral-500 border border-white/10 px-2 py-0.5 rounded-full">
                       {cat.skills.length} ITEMS
                     </span>
@@ -229,25 +227,25 @@ export default function Skills() {
                   </div>
                 </div>
 
-                {/* Collapsible Content Area */}
+                {/* Collapsible Grid Content */}
                 <div
                   className={`grid transition-all duration-500 ease-in-out ${
                     isActive
-                      ? "grid-rows-[1fr] opacity-100 p-4 md:p-6"
+                      ? "grid-rows-[1fr] opacity-100 p-4"
                       : "grid-rows-[0fr] opacity-0 p-0"
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-3 gap-2.5">
                       {cat.skills.map((skill) => {
                         const Icon = skill.icon;
                         return (
                           <div
                             key={skill.name}
-                            className="skill-tile flex flex-col items-center justify-center p-3 md:p-4 rounded-xl border border-white/5 bg-neutral-950/80 hover:bg-neutral-900 hover:border-white/20 transition-all duration-300"
+                            className="skill-tile flex flex-col items-center justify-center p-3 rounded-xl border border-white/5 bg-neutral-950/80 hover:bg-neutral-900 hover:border-white/20 transition-all duration-300"
                           >
-                            <Icon className="text-2xl md:text-3xl text-neutral-200 group-hover:text-blue-400" />
-                            <span className="mt-2 text-[10px] md:text-xs font-semibold text-neutral-300 tracking-wider text-center">
+                            <Icon className="text-2xl text-neutral-200" />
+                            <span className="mt-1.5 text-[10px] font-semibold text-neutral-300 tracking-wider text-center">
                               {skill.name}
                             </span>
                           </div>
