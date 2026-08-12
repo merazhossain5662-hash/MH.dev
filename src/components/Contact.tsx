@@ -52,7 +52,7 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="relative min-h-screen py-20 px-4 md:px-8 flex flex-col items-center justify-center bg-black/90 text-white overflow-hidden"
+      className="relative min-h-screen py-20 px-4 md:px-8 flex flex-col items-center justify-center bg-transparent text-white overflow-hidden"
     >
       {/* Background Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
