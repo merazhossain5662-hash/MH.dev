@@ -1,138 +1,183 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FiPlus, FiMinus } from "react-icons/fi";
+import {
+  FiBriefcase,
+  FiAward,
+  FiBook,
+  FiCpu,
+  FiCalendar,
+} from "react-icons/fi";
 
 interface TimelineItem {
+  _id: string;
   year: string;
   title: string;
-  insight?: string;
-  isCurrent?: boolean;
+  subtitle: string;
+  description: string;
+  category: "career" | "project" | "certificate" | "education";
+  tags?: string[];
 }
 
-const timelineData: TimelineItem[] = [
+const fallbackTimeline: TimelineItem[] = [
   {
+    _id: "1",
     year: "2026",
-    title:
-      "Focused on mastering advanced tools and preparing for professional opportunities.",
-    insight:
-      "Deepening expertise in modern Next.js architectures, performance optimizations, interactive UI design systems, and real-time canvas animations.",
-    isCurrent: true,
+    title: "Full-Stack Software Developer",
+    subtitle: "Independent Projects & Client Solutions",
+    description:
+      "Architected and deployed scalable MERN & Next.js web applications, integrating modern authentication systems and RESTful APIs.",
+    category: "career",
+    tags: ["Next.js", "React", "Node.js", "TypeScript", "TailwindCSS"],
   },
   {
-    year: "2025",
-    title:
-      "Began exploring Artificial Intelligence and its practical applications.",
-    insight:
-      "Integrated generative AI APIs into web platforms, experimented with LLM interfaces, and focused on building intelligent user experiences.",
-    isCurrent: false,
+    _id: "2",
+    year: "2026",
+    title: "Basic Robotics Workshop",
+    subtitle: "RoboGenesis Workshop",
+    description:
+      "Completed hands-on training in basic robotics, microcontroller integration, and embedded systems programming.",
+    category: "certificate",
+    tags: ["Robotics", "Embedded Systems", "Hardware"],
   },
   {
-    year: "2023",
-    title:
-      "Advanced into modern web development by building full-stack projects.",
-    insight:
-      "Mastered React, Node.js, and modern CSS frameworks like Tailwind CSS, transitioning from fundamental frontend layouts to complex full-stack web applications.",
-    isCurrent: false,
+    _id: "3",
+    year: "2025 - 2026",
+    title: "Complete Web Development Bootcamp",
+    subtitle: "Programming Hero",
+    description:
+      "Mastered modern full-stack development, building production-grade applications with MongoDB, Express, React, and Node.",
+    category: "education",
+    tags: ["MongoDB", "Express", "React", "Node.js"],
+  },
+  {
+    _id: "4",
+    year: "2024 - Present",
+    title: "Diploma in Electrical & Electronics Engineering",
+    subtitle: "Shyamoli Ideal Technical College",
+    description:
+      "Pursuing core engineering principles, circuit design, control systems, and electronics foundational theory.",
+    category: "education",
+    tags: ["EEE", "Circuit Design", "Electronics"],
   },
 ];
 
 export default function Timeline() {
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [timeline, setTimeline] = useState<TimelineItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const toggleInsight = (index: number) => {
-    setExpandedIndex(expandedIndex === index ? null : index);
+  useEffect(() => {
+    fetch("http://localhost:5000/api/timeline")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch");
+        return res.json();
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setTimeline(data);
+        } else {
+          setTimeline(fallbackTimeline);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        setTimeline(fallbackTimeline);
+        setLoading(false);
+      });
+  }, []);
+
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case "career":
+        return <FiBriefcase />;
+      case "certificate":
+        return <FiAward />;
+      case "education":
+        return <FiBook />;
+      default:
+        return <FiCpu />;
+    }
   };
 
+  if (loading) {
+    return (
+      <div className="py-24 text-center font-mono text-neutral-400 animate-pulse">
+        &gt; Retrieving historical logs...
+      </div>
+    );
+  }
+
   return (
-    <section
-      id="timeline"
-      className="relative py-20 px-4 md:px-16 max-w-5xl mx-auto"
-    >
-      {/* Section Header */}
-      <div className="text-center mb-16">
-        <span className="text-xs md:text-lg font-bold uppercase tracking-[0.3em] text-blue-500 border-b border-blue-500/40 pb-1">
-          TIMELINE
+    <section id="timeline" className="py-20 px-4 md:px-8 max-w-4xl mx-auto">
+      <div className="text-center space-y-2 mb-16">
+        <span className="text-xs font-mono text-blue-500 tracking-widest uppercase font-semibold">
+          MILESTONES & JOURNEY
         </span>
+        <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight">
+          Career Timeline
+        </h2>
       </div>
 
-      {/* Timeline Wrapper */}
-      <div className="relative pl-6 md:pl-10">
-        {/* Continuous Vertical Connecting Line */}
-        <div className="absolute left-[11px] md:left-[19px] top-3 bottom-3 w-[2px] bg-white/10" />
+      <div className="relative border-l-2 border-white/10 pl-6 md:pl-10 ml-4 md:ml-32 space-y-12">
+        {timeline.map((item, idx) => (
+          <motion.div
+            key={item._id}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.5, delay: idx * 0.1 }}
+            className="relative group"
+          >
+            {/* Timeline Icon Badge */}
+            <div className="absolute -left-[43px] md:-left-[59px] top-0 h-10 w-10 rounded-full bg-neutral-900 border border-blue-500/40 text-blue-400 flex items-center justify-center text-sm shadow-[0_0_15px_rgba(37,99,235,0.2)] group-hover:scale-110 group-hover:border-blue-500 transition-all">
+              {getCategoryIcon(item.category)}
+            </div>
 
-        <div className="space-y-10">
-          {timelineData.map((item, index) => {
-            const isExpanded = expandedIndex === index;
+            {/* Desktop Left Date Marker */}
+            <div className="hidden md:block absolute -left-44 top-2 text-right w-32 font-mono text-xs text-neutral-400 font-bold">
+              {item.year}
+            </div>
 
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative flex flex-col gap-2 group"
-              >
-                {/* Node Indicator Dot */}
-                <div className="absolute -left-[30px] md:-left-[46px] top-1.5 flex items-center justify-center z-10">
-                  {item.isCurrent ? (
-                    // Solid Blue Glowing Node for Current Year
-                    <div className="w-3 h-3 rounded-full bg-blue-500  animate-pulse ring-4 ring-black shadow-[0_0_12px_rgba(59,130,246,0.8)]" />
-                  ) : (
-                    // Hollow Blue Ring for Past Years
-                    <div className="w-3 h-3 rounded-full border-2 border-blue-500 bg-black ring-4 ring-black" />
-                  )}
-                </div>
-
-                {/* Year Label */}
-                <span className="text-sm font-bold text-neutral-500 tracking-wider">
-                  {item.year}
+            {/* Content Card */}
+            <div className="rounded-2xl border border-white/10 bg-neutral-900/40 backdrop-blur-md p-6 space-y-3 hover:border-blue-500/30 transition-all">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="md:hidden flex items-center gap-1 text-xs font-mono text-blue-400 font-bold">
+                  <FiCalendar /> {item.year}
                 </span>
+                <span className="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-neutral-400 uppercase">
+                  {item.category}
+                </span>
+              </div>
 
-                {/* Event Card */}
-                <div className="p-4 md:p-6 rounded-2xl border border-white/10 bg-transparent backdrop-blur-xs transition-all duration-300 hover:border-white/20 hover:backdrop-blur-sm shadow-xl">
-                  <h3 className="text-lg  font-extrabold text-white leading-relaxed">
-                    {item.title}
-                  </h3>
+              <div>
+                <h3 className="text-xl font-bold text-white group-hover:text-blue-400 transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-xs font-mono text-blue-400/80 mt-0.5">
+                  {item.subtitle}
+                </p>
+              </div>
 
-                  {/* Expandable Insight Section */}
-                  {item.insight && (
-                    <div className="mt-4 pt-2">
-                      <button
-                        onClick={() => toggleInsight(index)}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-500 tracking-wider hover:text-blue-400 transition-colors uppercase"
-                      >
-                        {isExpanded ? (
-                          <>
-                            <FiMinus className="text-sm" /> READ LESS
-                          </>
-                        ) : (
-                          <>
-                            <FiPlus className="text-sm" /> READ INSIGHT
-                          </>
-                        )}
-                      </button>
+              <p className="text-sm text-neutral-300 leading-relaxed">
+                {item.description}
+              </p>
 
-                      {isExpanded && (
-                        <motion.p
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.3 }}
-                          className="mt-3 text-sm text-neutral-400 leading-relaxed border-l-2 border-blue-500/40 pl-3"
-                        >
-                          {item.insight}
-                        </motion.p>
-                      )}
-                    </div>
-                  )}
+              {item.tags && item.tags.length > 0 && (
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {item.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/20 text-[10px] font-mono text-blue-400"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
                 </div>
-              </motion.div>
-            );
-          })}
-        </div>
+              )}
+            </div>
+          </motion.div>
+        ))}
       </div>
     </section>
   );

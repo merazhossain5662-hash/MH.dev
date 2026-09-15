@@ -28,20 +28,19 @@ export default function InteractiveBackground({
 
     let animationFrameId: number;
     let points: Point[][] = [];
-    const gridSize = 50; // Grid cell size in px
+    const gridSize = 45;
     let cols = 0;
     let rows = 0;
 
     const mouse = {
       x: -1000,
       y: -1000,
-      radius: 140, // Airflow influence radius
-      power: 18, // Airflow push strength
+      radius: 130,
+      power: 16,
     };
 
-    // Smooth GSAP mouse tracking for fluid warping
-    const xTo = gsap.quickTo(mouse, "x", { duration: 0.9, ease: "power2.out" });
-    const yTo = gsap.quickTo(mouse, "y", { duration: 0.9, ease: "power2.out" });
+    const xTo = gsap.quickTo(mouse, "x", { duration: 0.8, ease: "power2.out" });
+    const yTo = gsap.quickTo(mouse, "y", { duration: 0.8, ease: "power2.out" });
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -80,7 +79,6 @@ export default function InteractiveBackground({
     const updateAndDraw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 1. Calculate fluid airflow displacement
       for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
           const p = points[r][c];
@@ -105,28 +103,26 @@ export default function InteractiveBackground({
         }
       }
 
-      // 2. Center-focused Radial Masking (AJ-style vignette)
-      // Grid lines are clear near the center, but fade to 0 opacity towards edges
+      // Grid line opacity centered strictly in the middle, zero opacity at edges
       const centerX = canvas.width / 2;
       const centerY = canvas.height / 2;
-      const maxRadius = Math.max(canvas.width, canvas.height) * 0.65;
+      const radius = Math.min(canvas.width, canvas.height) * 0.55;
 
-      const gradient = ctx.createRadialGradient(
+      const strokeGradient = ctx.createRadialGradient(
         centerX,
         centerY,
         0,
         centerX,
         centerY,
-        maxRadius,
+        radius,
       );
-      gradient.addColorStop(0, "rgba(255, 255, 255, 0.12)"); // Visible in center
-      gradient.addColorStop(0.5, "rgba(255, 255, 255, 0.05)"); // Fades in mid-screen
-      gradient.addColorStop(1, "rgba(255, 255, 255, 0.0)"); // Fades completely to dark at edges
+      strokeGradient.addColorStop(0, "rgba(255, 255, 255, 0.12)");
+      strokeGradient.addColorStop(0.5, "rgba(255, 255, 255, 0.05)");
+      strokeGradient.addColorStop(1, "rgba(255, 255, 255, 0.0)");
 
-      ctx.strokeStyle = gradient;
+      ctx.strokeStyle = strokeGradient;
       ctx.lineWidth = 1;
 
-      // Draw horizontal curves
       for (let r = 0; r < rows; r++) {
         ctx.beginPath();
         ctx.moveTo(points[r][0].x, points[r][0].y);
@@ -141,7 +137,6 @@ export default function InteractiveBackground({
         ctx.stroke();
       }
 
-      // Draw vertical curves
       for (let c = 0; c < cols; c++) {
         ctx.beginPath();
         ctx.moveTo(points[0][c].x, points[0][c].y);
@@ -175,15 +170,22 @@ export default function InteractiveBackground({
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-black text-white selection:bg-blue-500 selection:text-white">
-      {/* Canvas Grid Layer with Radial Vignette Fade */}
-      <canvas
-        ref={canvasRef}
+    <div className="relative min-h-screen w-full bg-[#000000] text-white selection:bg-blue-500 selection:text-white overflow-x-hidden">
+      {/* Center spotlight only */}
+      <div
         className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 50%, rgba(20, 35, 60, 0.35) 0%, rgba(0, 0, 0, 1) 50%)",
+        }}
       />
 
-      {/* Main Content */}
-      <div className="relative z-10">{children}</div>
+      <canvas
+        ref={canvasRef}
+        className="fixed inset-0 z-0 pointer-events-none w-full h-full"
+      />
+
+      <div className="relative z-10 w-full bg-transparent">{children}</div>
     </div>
   );
 }

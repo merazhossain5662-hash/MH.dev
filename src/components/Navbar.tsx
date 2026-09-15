@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { FaCode, FaGithub, FaStar } from "react-icons/fa";
 import {
   FiHome,
   FiUser,
+  FiClock,
   FiFolder,
   FiTarget,
   FiMail,
@@ -16,6 +17,7 @@ import {
 const navItems = [
   { id: "home", label: "HOME", href: "#", icon: FiHome },
   { id: "about", label: "ABOUT", href: "#about", icon: FiUser },
+  { id: "timeline", label: "TIMELINE", href: "#timeline", icon: FiClock },
   { id: "projects", label: "PROJECTS", href: "#projects", icon: FiFolder },
   { id: "skills", label: "SKILLS", href: "#skills", icon: FiTarget },
   { id: "contact", label: "CONTACT", href: "#contact", icon: FiMail },
@@ -23,6 +25,37 @@ const navItems = [
 
 export default function Navbar() {
   const [activeTab, setActiveTab] = useState("home");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // If scrolled to top, reset to home
+      if (window.scrollY < 100) {
+        setActiveTab("home");
+        return;
+      }
+
+      // Check section visibility via positions
+      const sections = navItems
+        .filter((item) => item.id !== "home")
+        .map((item) => document.getElementById(item.id))
+        .filter(Boolean) as HTMLElement[];
+
+      const scrollPosition = window.scrollY + window.innerHeight / 3;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section.offsetTop <= scrollPosition) {
+          setActiveTab(section.id);
+          break;
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
     <>
@@ -62,7 +95,7 @@ export default function Navbar() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
       >
-        <nav className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-black/70 border border-white/10 backdrop-blur-xl shadow-2xl">
+        <nav className="flex items-center gap-1 p-1.5 rounded-2xl bg-neutral-950/80 border border-white/10 backdrop-blur-xl shadow-2xl">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -72,31 +105,38 @@ export default function Navbar() {
                 key={item.id}
                 href={item.href}
                 onClick={() => setActiveTab(item.id)}
-                className="relative flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-medium transition-colors"
+                className="relative flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-medium transition-colors"
               >
                 {/* Smooth Animated Active Pill Background */}
                 {isActive && (
                   <motion.div
                     layoutId="activeTabPill"
-                    className="absolute inset-0 bg-white/15 rounded-xl border border-white/20"
+                    className="absolute inset-0 bg-neutral-800/90 rounded-xl border border-white/15"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
 
                 <Icon
-                  className={`relative z-10 text-base ${isActive ? "text-blue-400" : "text-gray-400 hover:text-white"}`}
+                  className={`relative z-10 text-base transition-colors ${
+                    isActive
+                      ? "text-blue-400"
+                      : "text-gray-400 hover:text-white"
+                  }`}
                 />
 
-                {isActive && (
-                  <motion.span
-                    initial={{ opacity: 0, width: 0 }}
-                    animate={{ opacity: 1, width: "auto" }}
-                    exit={{ opacity: 0, width: 0 }}
-                    className="relative z-10 text-white font-semibold tracking-wider"
-                  >
-                    {item.label}
-                  </motion.span>
-                )}
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.span
+                      initial={{ opacity: 0, width: 0 }}
+                      animate={{ opacity: 1, width: "auto" }}
+                      exit={{ opacity: 0, width: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="relative z-10 text-white font-semibold tracking-wider whitespace-nowrap overflow-hidden"
+                    >
+                      {item.label}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </Link>
             );
           })}

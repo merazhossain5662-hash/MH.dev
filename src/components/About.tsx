@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion, Variants } from "framer-motion";
 
 const badges = [
@@ -10,7 +11,6 @@ const badges = [
   "FULL STACK DEVELOPER",
 ];
 
-// Motion animation variants
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   visible: {
@@ -32,16 +32,18 @@ const itemVariants: Variants = {
 };
 
 export default function About() {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
-    <section id="about" className="relative py-28 px-6  overflow-hidden">
-      {/* 1. Grid Background Overlay */}
-
-      {/* 2. Soft Blue Radial Glow */}
-
+    <section id="about" className="relative py-28 px-6 overflow-hidden">
       <div className="relative z-20 max-w-5xl mx-auto space-y-16">
-        {/* TOP SECTION: Extra Bold Title & Subtitle */}
+        {/* TOP SECTION */}
         <motion.div
-          initial={{ y: 30, opacity: 0 }}
+          initial={isMounted ? { y: 30, opacity: 0 } : false}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ type: "spring", stiffness: 200, damping: 20 }}
@@ -56,11 +58,11 @@ export default function About() {
           </p>
         </motion.div>
 
-        {/* BOTTOM SECTION: Bio + Glassy Pill Tags */}
+        {/* BOTTOM SECTION */}
         <div className="flex flex-col md:flex-row items-start justify-between gap-10 md:gap-14 pt-2">
-          {/* Left: Bio Text with Smooth Fade-In */}
+          {/* Bio Text */}
           <motion.div
-            initial={{ x: -40, opacity: 0 }}
+            initial={isMounted ? { x: -40, opacity: 0 } : false}
             whileInView={{ x: 0, opacity: 1 }}
             viewport={{ once: true }}
             transition={{
@@ -71,17 +73,17 @@ export default function About() {
             }}
             className="flex-1 text-gray-200 text-lg md:text-xl leading-relaxed font-normal space-y-2 pr-2"
           >
-            I’m Meraz Hossain, based in Andhra Pradesh, India. I design and
-            build full-stack applications, with an increasing focus on
-            Artificial Intelligence. My work centers on building scalable
-            systems, solving complex problems clearly, and delivering practical,
-            real-world solutions.
+            I’m Meraz Hossain, based in Dhaka, Bangladesh. I design and build
+            full-stack applications, with an increasing focus on Artificial
+            Intelligence. My work centers on building scalable systems, solving
+            complex problems clearly, and delivering practical, real-world
+            solutions.
           </motion.div>
 
-          {/* Right: Glassy Animated Badges */}
+          {/* Animated Badges */}
           <motion.div
             variants={containerVariants}
-            initial="hidden"
+            initial={isMounted ? "hidden" : false}
             whileInView="visible"
             viewport={{ once: true }}
             className="md:w-[380px] flex flex-wrap gap-2.5 justify-start md:justify-end pt-2 md:pt-0"

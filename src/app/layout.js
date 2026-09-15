@@ -1,16 +1,14 @@
-import InteractiveBackground from "@/components/InteractiveBackground";
 import "./globals.css";
-
-export const metadata = {
-  title: "Meraz Hossain | Full Stack Developer",
-  description: "Portfolio of Meraz Hossain",
-};
+import SmoothScroll from "@/components/SmoothScroll";
+import InteractiveBackground from "@/components/InteractiveBackground";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="dark">
       <body className="bg-black text-white antialiased">
-        <InteractiveBackground>{children}</InteractiveBackground>
+        <SmoothScroll>
+          <InteractiveBackground>{children}</InteractiveBackground>
+        </SmoothScroll>
       </body>
     </html>
   );
