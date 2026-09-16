@@ -180,7 +180,7 @@ export default function Contact() {
 
           {/* Resume Button */}
           <a
-            href="/resume.pdf"
+            href="/resume"
             target="_blank"
             rel="noreferrer"
             className="relative z-10 flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-semibold text-neutral-300 hover:text-white hover:bg-white/5 transition-all duration-300"
