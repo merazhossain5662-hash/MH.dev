@@ -68,7 +68,7 @@ export default function Timeline() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/timeline")
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}api/timeline`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch");
         return res.json();
