@@ -76,9 +76,7 @@ export default function Projects() {
   );
 
   useEffect(() => {
-    const apiUrl =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api/projects";
-
+    const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}api/projects`;
     fetch(apiUrl)
       .then((res) => {
         if (!res.ok) throw new Error("Fetch failed");
