@@ -19,8 +19,7 @@ export default function ResumePage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 
-  const BASE_API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-  const RESUME_API = `${BASE_API}/api/resume`;
+  const RESUME_API = `${process.env.NEXT_PUBLIC_API_URL}api/resume`;
 
   const fetchResume = async () => {
     try {
