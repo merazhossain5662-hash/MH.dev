@@ -80,9 +80,9 @@ export default function AdminDashboard() {
   const [error, setError] = useState("");
 
   const BASE_API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-  const PROJECTS_API = `${BASE_API}/api/projects`;
-  const TIMELINE_API = `${BASE_API}/api/timeline`;
-  const RESUME_API = `${BASE_API}/api/resume`;
+  const PROJECTS_API = `${BASE_API}api/projects`;
+  const TIMELINE_API = `${BASE_API}api/timeline`;
+  const RESUME_API = `${BASE_API}api/resume`;
 
   const fetchResume = async () => {
     try {
