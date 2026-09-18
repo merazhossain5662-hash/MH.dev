@@ -8,7 +8,7 @@ import {
   FiMail,
   FiLinkedin,
   FiGithub,
-  FiTwitter,
+  FiFacebook,
   FiMessageSquare,
   FiCalendar,
   FiFileText,
@@ -28,10 +28,18 @@ const topics = [
 ];
 
 const socialLinks = [
-  { icon: FiMail, href: "mailto:your-email@example.com", label: "Email" },
-  { icon: FiLinkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { icon: FiGithub, href: "https://github.com", label: "GitHub" },
-  { icon: FiTwitter, href: "https://twitter.com", label: "Twitter" },
+  { icon: FiMail, href: "mailto:merazhossain5662@gmail.com", label: "Email" },
+  {
+    icon: FiLinkedin,
+    href: "https://www.linkedin.com/in/meraz-hossain-ph/",
+    label: "LinkedIn",
+  },
+  {
+    icon: FiGithub,
+    href: "https://github.com/merazhossain5662-hash",
+    label: "GitHub",
+  },
+  { icon: FiFacebook, href: "https://facebook.com", label: "Facebook" },
   { icon: FiMessageSquare, href: "#", label: "Discord/Chat" },
 ];
 

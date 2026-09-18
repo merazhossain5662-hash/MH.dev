@@ -6,8 +6,8 @@ import {
   FiSend,
   FiGithub,
   FiLinkedin,
-  FiTwitter,
   FiLink,
+  FiFacebook,
 } from "react-icons/fi";
 
 export default function Hero() {
@@ -72,9 +72,15 @@ export default function Hero() {
             {/* Social Icons */}
             <div className="flex items-center gap-3.5 pl-4 text-neutral-400 border-l border-white/10">
               {[
-                { icon: FiGithub, href: "https://github.com" },
-                { icon: FiLinkedin, href: "https://linkedin.com" },
-                { icon: FiTwitter, href: "https://twitter.com" },
+                {
+                  icon: FiLinkedin,
+                  href: "https://www.linkedin.com/in/meraz-hossain-ph/",
+                },
+                {
+                  icon: FiGithub,
+                  href: "https://github.com/merazhossain5662-hash",
+                },
+                { icon: FiFacebook, href: "https://facebook.com" },
                 { icon: FiLink, href: "#" },
               ].map((item, idx) => (
                 <motion.a
